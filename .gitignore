@@ -130,3 +130,6 @@ dmypy.json
 
 # ok relevant
 *.ok_*
+
+# vscode relevant
+.vscode

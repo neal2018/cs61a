@@ -137,7 +137,7 @@ def play(strategy0, strategy1, score0=0, score1=0, dice=six_sided,
     # END PROBLEM 5
     # (note that the indentation for the problem 6 prompt (***YOUR CODE HERE***) might be misleading)
     # BEGIN PROBLEM 6
-    "*** YOUR CODE HERE ***"
+        say = say(scores[0], scores[1])
     # END PROBLEM 6
     return scores[0], scores[1]
 
@@ -225,7 +225,15 @@ def announce_highest(who, last_score=0, running_high=0):
     """
     assert who == 0 or who == 1, 'The who argument should indicate a player.'
     # BEGIN PROBLEM 7
-    "*** YOUR CODE HERE ***"
+
+    def say(score0, score1):
+        scores = [score0, score1]
+        cur_gain = scores[who] - last_score
+        if cur_gain > running_high:
+            print(
+                f"{cur_gain} point(s)! That's the biggest gain yet for Player {who}")
+        return announce_highest(who, scores[who], max(cur_gain, running_high))
+    return say
     # END PROBLEM 7
 
 
@@ -264,7 +272,12 @@ def make_averaged(original_function, trials_count=1000):
     3.0
     """
     # BEGIN PROBLEM 8
-    "*** YOUR CODE HERE ***"
+    def new_function(*args):
+        res = original_function(*args)
+        for _ in range(trials_count - 1):
+            res += original_function(*args)
+        return res/trials_count
+    return new_function
     # END PROBLEM 8
 
 
@@ -278,7 +291,16 @@ def max_scoring_num_rolls(dice=six_sided, trials_count=1000):
     1
     """
     # BEGIN PROBLEM 9
-    "*** YOUR CODE HERE ***"
+    MIN_DICE_NUM = 1
+    MAX_DICE_NUM = 10
+    best_num = 1
+    best_average = 0
+    for i in range(MIN_DICE_NUM, MAX_DICE_NUM+1):
+        res = make_averaged(roll_dice, trials_count)(i, dice)
+        if res > best_average:
+            best_num = i
+            best_average = res
+    return best_num
     # END PROBLEM 9
 
 
@@ -327,7 +349,11 @@ def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     rolls NUM_ROLLS otherwise.
     """
     # BEGIN PROBLEM 10
-    return 6  # Replace this statement
+    DICE_NUM_FOR_FREE_BACON = 0
+    if free_bacon(opponent_score) > cutoff:
+        return DICE_NUM_FOR_FREE_BACON
+    else:
+        return num_rolls
     # END PROBLEM 10
 
 
@@ -337,7 +363,20 @@ def swap_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     non-beneficial swap. Otherwise, it rolls NUM_ROLLS.
     """
     # BEGIN PROBLEM 11
-    return 6  # Replace this statement
+    DICE_NUM_FOR_FREE_BACON = 0
+    free_bacon_point = free_bacon(opponent_score)
+    future_point = score + free_bacon_point
+    is_trigger_swap = is_swap(score + future_point, opponent_score)
+    is_not_trigger_non_beneficial_swap = (
+        is_trigger_swap and future_point < opponent_score) or not is_trigger_swap
+    # trigger a beneficial swap
+    if future_point < opponent_score and is_trigger_swap:
+        return DICE_NUM_FOR_FREE_BACON
+    # at least CUTOFF points and not trigger a non-beneficial swap
+    elif free_bacon_point >= cutoff and is_not_trigger_non_beneficial_swap:
+        return DICE_NUM_FOR_FREE_BACON
+    else:
+        return num_rolls
     # END PROBLEM 11
 
 

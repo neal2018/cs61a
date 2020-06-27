@@ -350,7 +350,7 @@ def bacon_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     """
     # BEGIN PROBLEM 10
     DICE_NUM_FOR_FREE_BACON = 0
-    if free_bacon(opponent_score) > cutoff:
+    if free_bacon(opponent_score) >= cutoff:
         return DICE_NUM_FOR_FREE_BACON
     else:
         return num_rolls
@@ -366,7 +366,7 @@ def swap_strategy(score, opponent_score, cutoff=8, num_rolls=6):
     DICE_NUM_FOR_FREE_BACON = 0
     free_bacon_point = free_bacon(opponent_score)
     future_point = score + free_bacon_point
-    is_trigger_swap = is_swap(score + future_point, opponent_score)
+    is_trigger_swap = is_swap(future_point, opponent_score)
     is_not_trigger_non_beneficial_swap = (
         is_trigger_swap and future_point < opponent_score) or not is_trigger_swap
     # trigger a beneficial swap

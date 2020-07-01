@@ -182,4 +182,4 @@ def make_anonymous_factorial():
     True
     """
     # it's too hard...
-    return (lambda f: (lambda x: f(f, x)))(lambda g, n1: 1 if n1 == 0 else mul(n1, g(g, sub(n1, 1))))
+    return (lambda f: (lambda x, f=f: f(f, x)))(lambda g, n1: 1 if n1 == 0 else mul(n1, g(g, sub(n1, 1))))

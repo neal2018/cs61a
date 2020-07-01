@@ -1,4 +1,5 @@
-HW_SOURCE_FILE=__file__
+from operator import sub, mul
+HW_SOURCE_FILE = __file__
 
 
 def composer(func=lambda x: x):
@@ -20,7 +21,7 @@ def composer(func=lambda x: x):
     9
     """
     def func_adder(g):
-        "*** YOUR CODE HERE ***"
+        return composer(lambda x: func(g(x)))
     return func, func_adder
 
 
@@ -42,7 +43,10 @@ def g(n):
     >>> check(HW_SOURCE_FILE, 'g', ['While', 'For'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if n <= 3:
+        return n
+    return g(n-1) + 2*g(n-2) + 3*g(n-3)
+
 
 def g_iter(n):
     """Return the value of G(n), computed iteratively.
@@ -62,7 +66,15 @@ def g_iter(n):
     >>> check(HW_SOURCE_FILE, 'g_iter', ['Recursion'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if n <= 3:
+        return n
+    l = [0]*(n+1)
+    l[1] = 1
+    l[2] = 2
+    l[3] = 3
+    for i in range(4, n+1):
+        l[i] = l[i-1] + 2*l[i-2] + 3*l[i-3]
+    return l[n]
 
 
 def missing_digits(n):
@@ -84,7 +96,9 @@ def missing_digits(n):
     >>> check(HW_SOURCE_FILE, 'missing_digits', ['While', 'For'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if n//10 == 0:
+        return 0
+    return missing_digits(n//10) + max(0, n % 10 - (n//10) % 10 - 1)
 
 
 def count_change(total):
@@ -103,12 +117,23 @@ def count_change(total):
     >>> check(HW_SOURCE_FILE, 'count_change', ['While', 'For'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    def helper(n, m):  # loosely smaller
+        if n == 0:
+            return 1
+        elif n < 0:
+            return 0
+        elif m == 0:
+            return 0
+        else:
+            return helper(n-m, m) + helper(n, m//2)
+
+    return helper(total, 2**total)
 
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
     print("Move the top disk from rod", origin, "to rod", destination)
+
 
 def move_stack(n, start, end):
     """Print the moves required to move n disks on the start pole to the end
@@ -138,10 +163,13 @@ def move_stack(n, start, end):
     Move the top disk from rod 1 to rod 3
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
-    "*** YOUR CODE HERE ***"
+    if n==1:
+        print_move(start, end)
+        return
+    move_stack(n-1, start, 6-start-end)
+    print_move(start, end)
+    move_stack(n-1, 6-start-end, end)
 
-
-from operator import sub, mul
 
 def make_anonymous_factorial():
     """Return the value of an expression that computes factorial.
@@ -153,5 +181,5 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
-
+    # it's too hard...
+    return (lambda f: (lambda x: f(f, x)))(lambda g, n1: 1 if n1 == 0 else mul(n1, g(g, sub(n1, 1))))

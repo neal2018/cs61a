@@ -1,4 +1,4 @@
-HW_SOURCE_FILE=__file__
+HW_SOURCE_FILE = __file__
 
 
 def pascal(row, column):
@@ -11,7 +11,11 @@ def pascal(row, column):
     >>> pascal(3, 2)	# Row 4 (1 3 3 1), 3rd entry
     3
     """
-    "*** YOUR CODE HERE ***"
+    if row < 0 or column > row:
+        return 0
+    if column == 0 or column == row:
+        return 1
+    return pascal(row-1, column-1) + pascal(row-1, column)
 
 
 def compose1(f, g):
@@ -19,6 +23,7 @@ def compose1(f, g):
     def h(x):
         return f(g(x))
     return h
+
 
 def repeated(f, n):
     """Return the function that computes the nth application of func (recursively!).
@@ -39,7 +44,9 @@ def repeated(f, n):
     ...       ['For', 'While'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if n == 0:
+        return lambda x: x
+    return lambda x: f(repeated(f, n-1)(x))
 
 
 def num_eights(x):
@@ -63,7 +70,9 @@ def num_eights(x):
     ...       ['Assign', 'AugAssign'])
     True
     """
-    "*** YOUR CODE HERE ***"
+    if x == 0:
+        return 0
+    return num_eights(x//10) + int(x % 10 == 8)
 
 
 def pingpong(n):
@@ -98,5 +107,9 @@ def pingpong(n):
     >>> check(HW_SOURCE_FILE, 'pingpong', ['Assign', 'AugAssign'])
     True
     """
-    "*** YOUR CODE HERE ***"
-
+    def helper(n):  # return direction, val
+        if n == 1:
+            return 1, 1
+        return (lambda d, v: (-d, v + d)
+                if num_eights(n) > 0 or n % 8 == 0 else (d, v + d))(*helper(n-1))
+    return helper(n)[1]

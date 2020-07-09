@@ -8,7 +8,7 @@ def reverse_iter(lst):
     >>> reverse_iter([1, 2, 3, 4])
     [4, 3, 2, 1]
     """
-    "*** YOUR CODE HERE ***"
+    return [lst[i] for i in range(len(lst)-1, -1, -1)]
 
 
 def reverse_recursive(lst):
@@ -17,7 +17,9 @@ def reverse_recursive(lst):
     >>> reverse_recursive([1, 2, 3, 4])
     [4, 3, 2, 1]
     """
-    "*** YOUR CODE HERE ***"
+    if len(lst) == 1:
+        return lst
+    return [lst[-1]] + reverse_recursive(lst[:-1])
 
 
 def distance(city_a, city_b):
@@ -31,7 +33,7 @@ def distance(city_a, city_b):
     >>> distance(city_c, city_d)
     5.0
     """
-    "*** YOUR CODE HERE ***"
+    return sqrt((get_lat(city_a) - get_lat(city_b))**2+(get_lon(city_a) - get_lon(city_b))**2)
 
 
 def closer_city(lat, lon, city_a, city_b):
@@ -48,7 +50,13 @@ def closer_city(lat, lon, city_a, city_b):
     >>> closer_city(41.29, 174.78, bucharest, vienna)
     'Bucharest'
     """
-    "*** YOUR CODE HERE ***"
+    tmp = make_city('tmp', lat, lon)
+    dist_a = distance(tmp, city_a)
+    dist_b = distance(tmp, city_b)
+    if dist_a <= dist_b:
+        return get_name(city_a)
+    else:
+        return get_name(city_b)
 
 
 def check_abstraction():
@@ -162,4 +170,9 @@ def add_chars(w1, w2):
     ...       ['For', 'While', 'Set', 'SetComp']) # Must use recursion
     True
     """
-    "*** YOUR CODE HERE ***"
+    if len(w1) == 0:
+        return w2
+    elif w1[0]==w2[0]:
+        return add_chars(w1[1:], w2[1:])
+    else:
+        return w2[0] + add_chars(w1, w2[1:])

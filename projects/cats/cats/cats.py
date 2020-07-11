@@ -101,7 +101,7 @@ def autocorrect(user_word, valid_words, diff_function, limit):
     if user_word in valid_words:
         return user_word
     res = None
-    min_diff = 10**9
+    min_diff = float("inf")
     for word in valid_words:
         diff = diff_function(user_word, word, limit)
         if diff < min_diff:
@@ -223,7 +223,7 @@ def fastest_words(game):
     "*** YOUR CODE HERE ***"
     res = [[] for p in players]
     for w in words:
-        min_time = 10**9
+        min_time = float("inf")
         target_player = None
         for p in players:
             t = time(game, p, w)
@@ -294,6 +294,20 @@ def key_distance_diff(start, goal, limit):
 
     # BEGIN PROBLEM EC1
     "*** YOUR CODE HERE ***"
+    if limit < 0:
+        return float("inf")
+    elif not start or not goal:
+        return max(len(goal), len(start))
+
+    elif start[-1] == goal[-1]:
+        return key_distance_diff(start[:-1], goal[:-1], limit)
+
+    else:
+        add_diff = key_distance_diff(start, goal[:-1], limit - 1) + 1
+        remove_diff = key_distance_diff(start[:-1], goal, limit - 1) + 1
+        substitute_diff = key_distance_diff(
+            start[:-1], goal[:-1], limit - key_distance[start[-1], goal[-1]]) + key_distance[start[-1], goal[-1]]
+        return min(add_diff, remove_diff, substitute_diff)
     # END PROBLEM EC1
 
 
@@ -317,6 +331,20 @@ def faster_autocorrect(user_word, valid_words, diff_function, limit):
 
     # BEGIN PROBLEM EC2
     "*** YOUR CODE HERE ***"
+    diff_function = memo(diff_function)
+    if user_word in valid_words:
+        return user_word
+    res = None
+    min_diff = float("inf")
+    for word in valid_words:
+        diff = diff_function(user_word, word, limit)
+        if diff < min_diff:
+            min_diff = diff
+            res = word
+    if min_diff > limit:
+        return user_word
+    else:
+        return res
     # END PROBLEM EC2
 
 

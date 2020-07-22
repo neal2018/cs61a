@@ -33,3 +33,9 @@ def make_generators_generator(g):
     9
     """
     "*** YOUR CODE HERE ***"
+    def ret(limit):
+        it = g()
+        for i in range(limit+1):
+            yield next(it)
+    for k, _ in enumerate(g()):
+        yield ret(k)
